@@ -15,18 +15,17 @@ import (
 )
 
 // @ Param page body int false "Page"
-// @Summary Get multiple services
+// @Summary Get multiple persistentvolumes
 // @Produce  json
 // @Param cluster path string true "ClusterID"
-// @Param namespace query string true "Namespace"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/k8s/{cluster}/services [get]
-func GetServices(c *gin.Context) {
+// @Router /api/v1/k8s/{cluster}/persistentvolumes [get]
+func GetPersistentVolumes(c *gin.Context) {
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}
 	cluster := c.Param("cluster")
-	namespace := c.Query("namespace")
+	//namespace := c.Query("namespace")
 
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
@@ -40,29 +39,28 @@ func GetServices(c *gin.Context) {
 		return
 	}
 
-	services, err := clientset.CoreV1().Services(namespace).List(context.TODO(), metav1.ListOptions{})
+	persistentvolumes, err := clientset.CoreV1().PersistentVolumes().List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		logging.Error(err)
 		appG.Response(http.StatusInternalServerError, e.ERROR_NO_K8S_RESOURCE, nil)
 		return
 	}
-	appG.Response(http.StatusOK, e.SUCCESS, services)
+	appG.Response(http.StatusOK, e.SUCCESS, persistentvolumes)
 }
 
-// @Summary Get single service
+// @Summary Get single persistentvolume
 // @Produce json
 // @Param cluster path string true "ClusterID"
-// @Param namespace path string true "Namespace"
-// @Param serviceName path string true "Service Name"
+// @Param persistentvolumeName path string true "Persistentvolume Name"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/k8s/{cluster}/services/{namespace}/{serviceName} [get]
-func GetService(c *gin.Context) {
+// @Router /api/v1/k8s/{cluster}/persistentvolumes/{persistentvolumeName} [get]
+func GetPersistentVolume(c *gin.Context) {
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}
 	cluster := c.Param("cluster")
-	namespace := c.Param("namespace")
-	serviceName := c.Param("serviceName")
+	//namespace := c.Param("namespace")
+	persistentvolumeName := c.Param("persistentvolumeName")
 
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
@@ -76,11 +74,11 @@ func GetService(c *gin.Context) {
 		return
 	}
 
-	service, err := clientset.CoreV1().Services(namespace).Get(context.TODO(), serviceName, metav1.GetOptions{})
+	persistentvolume, err := clientset.CoreV1().PersistentVolumes().Get(context.TODO(), persistentvolumeName, metav1.GetOptions{})
 	if err != nil {
 		logging.Error(err)
 		appG.Response(http.StatusInternalServerError, e.ERROR_NO_K8S_RESOURCE, nil)
 		return
 	}
-	appG.Response(http.StatusOK, e.SUCCESS, service)
+	appG.Response(http.StatusOK, e.SUCCESS, persistentvolume)
 }

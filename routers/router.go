@@ -27,7 +27,37 @@ func InitRouter() *gin.Engine {
 	apiv1 := r.Group("/api/v1")
 	//apiv1.Use(jwt.JWT())
 	{
-		apiv1.GET("/k8s/:cluster/:namespace/pods", k8sv1.GetPods)
+		apiv1.GET("/k8s/:cluster/pods", k8sv1.GetPods)
+		apiv1.GET("/k8s/:cluster/pods/:namespace/:podname", k8sv1.GetPod)
+
+		apiv1.GET("/k8s/:cluster/deployments", k8sv1.GetDeployments)
+		apiv1.GET("/k8s/:cluster/deployments/:namespace/:deploymentName", k8sv1.GetDeployment)
+
+		apiv1.GET("/k8s/:cluster/services", k8sv1.GetServices)
+		apiv1.GET("/k8s/:cluster/services/:namespace/:serviceName", k8sv1.GetService)
+
+		apiv1.GET("/k8s/:cluster/statefulsets", k8sv1.GetStatefulSets)
+		apiv1.GET("/k8s/:cluster/statefulsets/:namespace/:statefulsetName", k8sv1.GetStatefulSet)
+
+		apiv1.GET("/k8s/:cluster/ingresses", k8sv1.GetIngresses)
+		apiv1.GET("/k8s/:cluster/ingresses/:namespace/:ingressName", k8sv1.GetIngress)
+
+		apiv1.GET("/k8s/:cluster/configmaps", k8sv1.GetConfigMaps)
+		apiv1.GET("/k8s/:cluster/configmaps/:namespace/:configmapName", k8sv1.GetConfigMap)
+
+		apiv1.GET("/k8s/:cluster/persistentvolumeclaims", k8sv1.GetPersistentVolumeClaims)
+		apiv1.GET("/k8s/:cluster/persistentvolumeclaims/:namespace/:persistentvolumeclaimName", k8sv1.GetPersistentVolumeClaim)
+
+		//不区分namespace的
+		apiv1.GET("/k8s/:cluster/persistentvolumes", k8sv1.GetPersistentVolumes)
+		apiv1.GET("/k8s/:cluster/persistentvolumes/:persistentvolumeName", k8sv1.GetPersistentVolume)
+
+		apiv1.GET("/k8s/:cluster/nodes", k8sv1.GetNodes)
+		apiv1.GET("/k8s/:cluster/nodes/:nodeName", k8sv1.GetNode)
+
+		apiv1.GET("/k8s/:cluster/namespaces", k8sv1.GetNamespaces)
+		apiv1.GET("/k8s/:cluster/namespaces/:namespaceName", k8sv1.GetNamespace)
+
 
 		//查询
 		apiv1.GET("/admin/clusters", admv1.GetClusters)

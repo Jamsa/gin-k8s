@@ -51,11 +51,12 @@ func GetCluster(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, cluster)
 }
 
+// @ Param tag_id body int false "TagID"
+// @ Param created_by body int false "CreatedBy"
+
 // @Summary Get multiple clusters
 // @Produce  json
-// 不要的Param tag_id body int false "TagID"
-// @Param state body int false "State"
-// @Param created_by body int false "CreatedBy"
+// @Param state query int false "State"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Router /api/v1/admin/clusters [get]
@@ -64,7 +65,8 @@ func GetClusters(c *gin.Context) {
 	valid := validation.Validation{}
 
 	state := -1
-	if arg := c.PostForm("state"); arg != "" {
+	//if arg := c.PostForm("state"); arg != "" {
+	if arg := c.Query("state"); arg != "" {
 		state = com.StrTo(arg).MustInt()
 		valid.Range(state, 0, 1, "state")
 	}
@@ -113,14 +115,16 @@ type AddClusterForm struct {
 	State   int    `form:"state" valid:"Range(0,1)"`
 }
 
+// @ Param tag_id body int true "TagID"
+// @ Param title body string true "Title"
+// @ Param desc body string true "Desc"
+// @ Param content body string true "Content"
+// @ Param created_by body string true "CreatedBy"
+// @ Param state body int true "State"
+
 // @Summary Add cluster
 // @Produce  json
-// Param tag_id body int true "TagID"
-// @Param title body string true "Title"
-// @Param desc body string true "Desc"
-// @Param content body string true "Content"
-// @Param created_by body string true "CreatedBy"
-// @Param state body int true "State"
+// @Param cluster body v1.AddClusterForm true "cluster集群"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Router /api/v1/admin/clusters [post]
@@ -171,15 +175,18 @@ type EditClusterForm struct {
 	State int `form:"state" valid:"Range(0,1)"`
 }
 
+// @ Param id path int true "ID"
+// @ Param tag_id body string false "TagID"
+// @ Param title body string false "Title"
+// @ Param desc body string false "Desc"
+// @ Param content body string false "Content"
+// @ Param modified_by body string true "ModifiedBy"
+// @ Param state body int false "State"
+
+
 // @Summary Update cluster
 // @Produce  json
-// @Param id path int true "ID"
-// @Param tag_id body string false "TagID"
-// @Param title body string false "Title"
-// @Param desc body string false "Desc"
-// @Param content body string false "Content"
-// @Param modified_by body string true "ModifiedBy"
-// @Param state body int false "State"
+// @Param cluster body v1.EditClusterForm true "cluster集群"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Router /api/v1/admin/clusters/{id} [put]

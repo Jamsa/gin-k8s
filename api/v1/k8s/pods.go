@@ -14,19 +14,19 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// @ Param page body int false "Page"
 // @Summary Get multiple pods
 // @Produce  json
 // @Param cluster path string true "ClusterID"
-// @Param namespace path string true "Namespace"
-// @Param page body int false "Page"
+// @Param namespace query string true "Namespace"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/k8s/{cluster}/{namespace}/pods [get]
+// @Router /api/v1/k8s/{cluster}/pods [get]
 func GetPods(c *gin.Context) {
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}
 	cluster := c.Param("cluster")
-	namespace := c.Param("namespace")
+	namespace := c.Query("namespace")
 
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
@@ -56,7 +56,7 @@ func GetPods(c *gin.Context) {
 // @Param podname path string true "Pod Name"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/k8s/{cluster}/{namespace}/pods/{podname} [get]
+// @Router /api/v1/k8s/{cluster}/pods/{namespace}/{podname} [get]
 func GetPod(c *gin.Context) {
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}

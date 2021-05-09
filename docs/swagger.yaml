@@ -8,6 +8,31 @@ definitions:
       msg:
         type: string
     type: object
+  v1.AddClusterForm:
+    properties:
+      content:
+        type: string
+      desc:
+        type: string
+      name:
+        type: string
+      state:
+        type: integer
+    type: object
+  v1.EditClusterForm:
+    properties:
+      content:
+        type: string
+      desc:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      state:
+        description: ModifiedBy    string `form:"modified_by" valid:"Required;MaxSize(100)"`
+        type: integer
+    type: object
 info:
   contact: {}
   license: {}
@@ -16,15 +41,9 @@ paths:
     get:
       parameters:
       - description: State
-        in: body
+        in: query
         name: state
-        schema:
-          type: integer
-      - description: CreatedBy
-        in: body
-        name: created_by
-        schema:
-          type: integer
+        type: integer
       produces:
       - application/json
       responses:
@@ -39,42 +58,12 @@ paths:
       summary: Get multiple clusters
     post:
       parameters:
-      - description: TagID
+      - description: cluster集群
         in: body
-        name: tag_id
+        name: cluster
         required: true
         schema:
-          type: integer
-      - description: Title
-        in: body
-        name: title
-        required: true
-        schema:
-          type: string
-      - description: Desc
-        in: body
-        name: desc
-        required: true
-        schema:
-          type: string
-      - description: Content
-        in: body
-        name: content
-        required: true
-        schema:
-          type: string
-      - description: CreatedBy
-        in: body
-        name: created_by
-        required: true
-        schema:
-          type: string
-      - description: State
-        in: body
-        name: state
-        required: true
-        schema:
-          type: integer
+          $ref: '#/definitions/v1.AddClusterForm'
       produces:
       - application/json
       responses:
@@ -128,42 +117,12 @@ paths:
       summary: Get a single cluster
     put:
       parameters:
-      - description: ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: TagID
+      - description: cluster集群
         in: body
-        name: tag_id
-        schema:
-          type: string
-      - description: Title
-        in: body
-        name: title
-        schema:
-          type: string
-      - description: Desc
-        in: body
-        name: desc
-        schema:
-          type: string
-      - description: Content
-        in: body
-        name: content
-        schema:
-          type: string
-      - description: ModifiedBy
-        in: body
-        name: modified_by
+        name: cluster
         required: true
         schema:
-          type: string
-      - description: State
-        in: body
-        name: state
-        schema:
-          type: integer
+          $ref: '#/definitions/v1.EditClusterForm'
       produces:
       - application/json
       responses:
@@ -176,7 +135,32 @@ paths:
           schema:
             $ref: '#/definitions/app.Response'
       summary: Update cluster
-  /api/v1/k8s/{cluster}/{namespace}/pods:
+  /api/v1/k8s/{cluster}/configmaps:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Namespace
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get multiple configmaps
+  /api/v1/k8s/{cluster}/configmaps/{namespace}/{configmapName}:
     get:
       parameters:
       - description: ClusterID
@@ -189,11 +173,336 @@ paths:
         name: namespace
         required: true
         type: string
-      - description: Page
-        in: body
-        name: page
-        schema:
-          type: integer
+      - description: ConfigMap Name
+        in: path
+        name: configmapName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get single configmap
+  /api/v1/k8s/{cluster}/deployments:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Namespace
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get multiple deployments
+  /api/v1/k8s/{cluster}/deployments/{namespace}/{deploymentName}:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Namespace
+        in: path
+        name: namespace
+        required: true
+        type: string
+      - description: Deployment Name
+        in: path
+        name: deploymentName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get single deployment
+  /api/v1/k8s/{cluster}/ingresses:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Namespace
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get multiple ingresses
+  /api/v1/k8s/{cluster}/ingresses/{namespace}/{ingressName}:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Namespace
+        in: path
+        name: namespace
+        required: true
+        type: string
+      - description: Ingress Name
+        in: path
+        name: ingressName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get single ingress
+  /api/v1/k8s/{cluster}/namespaces:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get multiple namespaces
+  /api/v1/k8s/{cluster}/namespaces/{namespaceName}:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Namespace Name
+        in: path
+        name: namespaceName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get single namespace
+  /api/v1/k8s/{cluster}/nodes:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get multiple nodes
+  /api/v1/k8s/{cluster}/nodes/{nodeName}:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Node Name
+        in: path
+        name: nodeName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get single node
+  /api/v1/k8s/{cluster}/persistentvolumeclaims:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Namespace
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get multiple persistentvolumeclaims
+  /api/v1/k8s/{cluster}/persistentvolumeclaims/{namespace}/{persistentvolumeclaimName}:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Namespace
+        in: path
+        name: namespace
+        required: true
+        type: string
+      - description: Persistentvolumeclaim Name
+        in: path
+        name: persistentvolumeclaimName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get single persistentvolumeclaim
+  /api/v1/k8s/{cluster}/persistentvolumes:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get multiple persistentvolumes
+  /api/v1/k8s/{cluster}/persistentvolumes/{persistentvolumeName}:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Persistentvolume Name
+        in: path
+        name: persistentvolumeName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get single persistentvolume
+  /api/v1/k8s/{cluster}/pods:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Namespace
+        in: query
+        name: namespace
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -206,7 +515,7 @@ paths:
           schema:
             $ref: '#/definitions/app.Response'
       summary: Get multiple pods
-  /api/v1/k8s/{cluster}/{namespace}/pods/{podname}:
+  /api/v1/k8s/{cluster}/pods/{namespace}/{podname}:
     get:
       parameters:
       - description: ClusterID
@@ -236,4 +545,114 @@ paths:
           schema:
             $ref: '#/definitions/app.Response'
       summary: Get single pod
+  /api/v1/k8s/{cluster}/services:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Namespace
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get multiple services
+  /api/v1/k8s/{cluster}/services/{namespace}/{serviceName}:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Namespace
+        in: path
+        name: namespace
+        required: true
+        type: string
+      - description: Service Name
+        in: path
+        name: serviceName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get single service
+  /api/v1/k8s/{cluster}/statefulsets:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Namespace
+        in: query
+        name: namespace
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get multiple statefulsets
+  /api/v1/k8s/{cluster}/statefulsets/{namespace}/{statefulsetName}:
+    get:
+      parameters:
+      - description: ClusterID
+        in: path
+        name: cluster
+        required: true
+        type: string
+      - description: Namespace
+        in: path
+        name: namespace
+        required: true
+        type: string
+      - description: StatefulSet Name
+        in: path
+        name: statefulsetName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get single statefulset
 swagger: "2.0"

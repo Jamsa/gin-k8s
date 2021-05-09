@@ -15,14 +15,14 @@ import (
 )
 
 // @ Param page body int false "Page"
-// @Summary Get multiple services
+// @Summary Get multiple ingresses
 // @Produce  json
 // @Param cluster path string true "ClusterID"
 // @Param namespace query string true "Namespace"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/k8s/{cluster}/services [get]
-func GetServices(c *gin.Context) {
+// @Router /api/v1/k8s/{cluster}/ingresses [get]
+func GetIngresses(c *gin.Context) {
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}
 	cluster := c.Param("cluster")
@@ -40,29 +40,29 @@ func GetServices(c *gin.Context) {
 		return
 	}
 
-	services, err := clientset.CoreV1().Services(namespace).List(context.TODO(), metav1.ListOptions{})
+	ingresses, err := clientset.ExtensionsV1beta1().Ingresses(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		logging.Error(err)
 		appG.Response(http.StatusInternalServerError, e.ERROR_NO_K8S_RESOURCE, nil)
 		return
 	}
-	appG.Response(http.StatusOK, e.SUCCESS, services)
+	appG.Response(http.StatusOK, e.SUCCESS, ingresses)
 }
 
-// @Summary Get single service
+// @Summary Get single ingress
 // @Produce json
 // @Param cluster path string true "ClusterID"
 // @Param namespace path string true "Namespace"
-// @Param serviceName path string true "Service Name"
+// @Param ingressName path string true "Ingress Name"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/k8s/{cluster}/services/{namespace}/{serviceName} [get]
-func GetService(c *gin.Context) {
+// @Router /api/v1/k8s/{cluster}/ingresses/{namespace}/{ingressName} [get]
+func GetIngress(c *gin.Context) {
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}
 	cluster := c.Param("cluster")
 	namespace := c.Param("namespace")
-	serviceName := c.Param("serviceName")
+	ingressName := c.Param("ingressName")
 
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
@@ -76,11 +76,11 @@ func GetService(c *gin.Context) {
 		return
 	}
 
-	service, err := clientset.CoreV1().Services(namespace).Get(context.TODO(), serviceName, metav1.GetOptions{})
+	ingress, err := clientset.ExtensionsV1beta1().Ingresses(namespace).Get(context.TODO(), ingressName, metav1.GetOptions{})
 	if err != nil {
 		logging.Error(err)
 		appG.Response(http.StatusInternalServerError, e.ERROR_NO_K8S_RESOURCE, nil)
 		return
 	}
-	appG.Response(http.StatusOK, e.SUCCESS, service)
+	appG.Response(http.StatusOK, e.SUCCESS, ingress)
 }

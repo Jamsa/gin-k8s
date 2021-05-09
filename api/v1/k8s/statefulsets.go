@@ -15,14 +15,14 @@ import (
 )
 
 // @ Param page body int false "Page"
-// @Summary Get multiple services
+// @Summary Get multiple statefulsets
 // @Produce  json
 // @Param cluster path string true "ClusterID"
 // @Param namespace query string true "Namespace"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/k8s/{cluster}/services [get]
-func GetServices(c *gin.Context) {
+// @Router /api/v1/k8s/{cluster}/statefulsets [get]
+func GetStatefulSets(c *gin.Context) {
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}
 	cluster := c.Param("cluster")
@@ -40,29 +40,29 @@ func GetServices(c *gin.Context) {
 		return
 	}
 
-	services, err := clientset.CoreV1().Services(namespace).List(context.TODO(), metav1.ListOptions{})
+	statefulsets, err := clientset.AppsV1().StatefulSets(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		logging.Error(err)
 		appG.Response(http.StatusInternalServerError, e.ERROR_NO_K8S_RESOURCE, nil)
 		return
 	}
-	appG.Response(http.StatusOK, e.SUCCESS, services)
+	appG.Response(http.StatusOK, e.SUCCESS, statefulsets)
 }
 
-// @Summary Get single service
+// @Summary Get single statefulset
 // @Produce json
 // @Param cluster path string true "ClusterID"
 // @Param namespace path string true "Namespace"
-// @Param serviceName path string true "Service Name"
+// @Param statefulsetName path string true "StatefulSet Name"
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/k8s/{cluster}/services/{namespace}/{serviceName} [get]
-func GetService(c *gin.Context) {
+// @Router /api/v1/k8s/{cluster}/statefulsets/{namespace}/{statefulsetName} [get]
+func GetStatefulSet(c *gin.Context) {
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}
 	cluster := c.Param("cluster")
 	namespace := c.Param("namespace")
-	serviceName := c.Param("serviceName")
+	statefulsetName := c.Param("statefulsetName")
 
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
@@ -76,11 +76,11 @@ func GetService(c *gin.Context) {
 		return
 	}
 
-	service, err := clientset.CoreV1().Services(namespace).Get(context.TODO(), serviceName, metav1.GetOptions{})
+	statefulset, err := clientset.AppsV1().StatefulSets(namespace).Get(context.TODO(), statefulsetName, metav1.GetOptions{})
 	if err != nil {
 		logging.Error(err)
 		appG.Response(http.StatusInternalServerError, e.ERROR_NO_K8S_RESOURCE, nil)
 		return
 	}
-	appG.Response(http.StatusOK, e.SUCCESS, service)
+	appG.Response(http.StatusOK, e.SUCCESS, statefulset)
 }
