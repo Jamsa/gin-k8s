@@ -8,6 +8,11 @@ type Auth struct {
 	Password string `json:"password"`
 }
 
+// 通过Tabler接口指定表名
+func (Auth) TableName() string {
+	return "gink8s_user"
+}
+
 // CheckAuth checks if authentication information exists
 func CheckAuth(username, password string) (bool, error) {
 	var auth Auth

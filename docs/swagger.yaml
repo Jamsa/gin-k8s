@@ -1,4 +1,11 @@
 definitions:
+  api.Auth:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   app.Response:
     properties:
       code:
@@ -19,6 +26,17 @@ definitions:
       state:
         type: integer
     type: object
+  v1.AddUserForm:
+    properties:
+      desc:
+        type: string
+      fullname:
+        type: string
+      state:
+        type: integer
+      username:
+        type: string
+    type: object
   v1.EditClusterForm:
     properties:
       content:
@@ -32,6 +50,20 @@ definitions:
       state:
         description: ModifiedBy    string `form:"modified_by" valid:"Required;MaxSize(100)"`
         type: integer
+    type: object
+  v1.EditUserForm:
+    properties:
+      desc:
+        type: string
+      fullname:
+        type: string
+      id:
+        type: integer
+      state:
+        description: ModifiedBy    string `form:"modified_by" valid:"Required;MaxSize(100)"`
+        type: integer
+      username:
+        type: string
     type: object
 info:
   contact: {}
@@ -135,6 +167,104 @@ paths:
           schema:
             $ref: '#/definitions/app.Response'
       summary: Update cluster
+  /api/v1/admin/users:
+    get:
+      parameters:
+      - description: State
+        in: query
+        name: state
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get multiple users
+    post:
+      parameters:
+      - description: user集群
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/v1.AddUserForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Add user
+  /api/v1/admin/users/{id}:
+    delete:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Delete user
+    get:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get a single user
+    put:
+      parameters:
+      - description: user集群
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/v1.EditUserForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Update user
   /api/v1/k8s/{cluster}/configmaps:
     get:
       parameters:
@@ -655,4 +785,25 @@ paths:
           schema:
             $ref: '#/definitions/app.Response'
       summary: Get single statefulset
+  /auth:
+    post:
+      parameters:
+      - description: 认证信息
+        in: body
+        name: auth
+        required: true
+        schema:
+          $ref: '#/definitions/api.Auth'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: Get Auth
 swagger: "2.0"

@@ -53,6 +53,7 @@ func Setup() {
 
 	//TODO 关闭
 	db.AutoMigrate(&Cluster{})
+	db.AutoMigrate(&User{})
 }
 
 // CloseDB closes database connection (unnecessary)

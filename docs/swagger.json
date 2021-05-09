@@ -157,6 +157,158 @@
                 }
             }
         },
+        "/api/v1/admin/users": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get multiple users",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "State",
+                        "name": "state",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Add user",
+                "parameters": [
+                    {
+                        "description": "user集群",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.AddUserForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/admin/users/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a single user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Update user",
+                "parameters": [
+                    {
+                        "description": "user集群",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.EditUserForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/k8s/{cluster}/configmaps": {
             "get": {
                 "produces": [
@@ -944,9 +1096,53 @@
                     }
                 }
             }
+        },
+        "/auth": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get Auth",
+                "parameters": [
+                    {
+                        "description": "认证信息",
+                        "name": "auth",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.Auth"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "api.Auth": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "app.Response": {
             "type": "object",
             "properties": {
@@ -978,6 +1174,23 @@
                 }
             }
         },
+        "v1.AddUserForm": {
+            "type": "object",
+            "properties": {
+                "desc": {
+                    "type": "string"
+                },
+                "fullname": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "v1.EditClusterForm": {
             "type": "object",
             "properties": {
@@ -996,6 +1209,27 @@
                 "state": {
                     "description": "ModifiedBy    string `form:\"modified_by\" valid:\"Required;MaxSize(100)\"`",
                     "type": "integer"
+                }
+            }
+        },
+        "v1.EditUserForm": {
+            "type": "object",
+            "properties": {
+                "desc": {
+                    "type": "string"
+                },
+                "fullname": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "state": {
+                    "description": "ModifiedBy    string `form:\"modified_by\" valid:\"Required;MaxSize(100)\"`",
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         }

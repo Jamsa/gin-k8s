@@ -2,11 +2,12 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jamsa/gin-k8s/api"
 	admv1 "github.com/jamsa/gin-k8s/api/v1/admin"
 	k8sv1 "github.com/jamsa/gin-k8s/api/v1/k8s"
+	_ "github.com/jamsa/gin-k8s/docs"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
-	_ "github.com/jamsa/gin-k8s/docs"
 )
 
 // InitRouter initialize routing information
@@ -15,14 +16,14 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
-	/* r.StaticFS("/export", http.Dir(export.GetExcelFullPath()))
+	/*
+	r.StaticFS("/export", http.Dir(export.GetExcelFullPath()))
 	r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
 	r.StaticFS("/qrcode", http.Dir(qrcode.GetQrCodeFullPath()))
-
-	r.POST("/auth", api.GetAuth)
+	r.POST("/upload", api.UploadImage)
 	*/
+	r.POST("/auth", api.GetAuth)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	//r.POST("/upload", api.UploadImage)
 
 	apiv1 := r.Group("/api/v1")
 	//apiv1.Use(jwt.JWT())
@@ -59,16 +60,19 @@ func InitRouter() *gin.Engine {
 		apiv1.GET("/k8s/:cluster/namespaces/:namespaceName", k8sv1.GetNamespace)
 
 
-		//查询
+		//集群
 		apiv1.GET("/admin/clusters", admv1.GetClusters)
-		//获取
 		apiv1.GET("/admin/clusters/:id", admv1.GetCluster)
-		//新建
 		apiv1.POST("/admin/clusters", admv1.AddCluster)
-		//更新
 		apiv1.PUT("/admin/clusters/:id", admv1.EditCluster)
-		//删除
 		apiv1.DELETE("/admin/clusters/:id", admv1.DeleteCluster)
+
+		//用户
+		apiv1.GET("/admin/users", admv1.GetUsers)
+		apiv1.GET("/admin/users/:id", admv1.GetUser)
+		apiv1.POST("/admin/users", admv1.AddUser)
+		apiv1.PUT("/admin/users/:id", admv1.EditUser)
+		apiv1.DELETE("/admin/users/:id", admv1.DeleteUser)
 	}
 	/*{
 		//获取标签列表
