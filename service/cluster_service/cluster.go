@@ -73,9 +73,10 @@ func (a *Cluster) Get() (*models.Cluster, error) {
 
 func (a *Cluster) GetAll() ([]*models.Cluster, error) {
 	var (
-		clusters, cacheClusters []*models.Cluster
+		clusters/*, cacheClusters*/ []*models.Cluster
 	)
 
+	/*
 	cache := cache_service.Cluster{
 		State: a.State,
 
@@ -92,13 +93,14 @@ func (a *Cluster) GetAll() ([]*models.Cluster, error) {
 			return cacheClusters, nil
 		}
 	}
+	*/
 
 	clusters, err := models.GetClusters(a.PageNum, a.PageSize, a.getMaps())
 	if err != nil {
 		return nil, err
 	}
 
-	gredis.Set(key, clusters, 3600)
+	//gredis.Set(key, clusters, 3600)
 	return clusters, nil
 }
 
@@ -117,8 +119,14 @@ func (a *Cluster) Count() (int, error) {
 func (a *Cluster) getMaps() map[string]interface{} {
 	maps := make(map[string]interface{})
 	maps["deleted_on"] = 0
-	if a.State != -1 {
+	/*if a.State != -1 {
 		maps["state"] = a.State
+	}*/
+	if len(a.Name)>0 {
+		maps["name"] = a.Name
+	}
+	if len(a.Desc)>0 {
+		maps["desc"] = a.Desc
 	}
 	/*if a.TagID != -1 {
 		maps["tag_id"] = a.TagID

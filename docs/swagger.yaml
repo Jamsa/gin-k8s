@@ -1,3 +1,4 @@
+basePath: /
 definitions:
   api.Auth:
     properties:
@@ -65,29 +66,36 @@ definitions:
       username:
         type: string
     type: object
+  v1.QueryClusterForm:
+    properties:
+      content:
+        type: string
+      desc:
+        type: string
+      name:
+        type: string
+      state:
+        type: integer
+    type: object
+  v1.QueryUserForm:
+    properties:
+      desc:
+        type: string
+      fullname:
+        type: string
+      state:
+        type: integer
+      username:
+        type: string
+    type: object
 info:
   contact: {}
+  description: This is a gin k8s
   license: {}
+  title: gin-k8s API
+  version: 0.0.1
 paths:
   /api/v1/admin/clusters:
-    get:
-      parameters:
-      - description: State
-        in: query
-        name: state
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/app.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/app.Response'
-      summary: Get multiple clusters
     post:
       parameters:
       - description: cluster集群
@@ -167,13 +175,15 @@ paths:
           schema:
             $ref: '#/definitions/app.Response'
       summary: Update cluster
-  /api/v1/admin/users:
-    get:
+  /api/v1/admin/clusters/query:
+    post:
       parameters:
-      - description: State
-        in: query
-        name: state
-        type: integer
+      - description: cluster查询条件
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/v1.QueryClusterForm'
       produces:
       - application/json
       responses:
@@ -185,7 +195,10 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.Response'
-      summary: Get multiple users
+      security:
+      - ApiKeyAuth: []
+      summary: Get multiple clusters
+  /api/v1/admin/users:
     post:
       parameters:
       - description: user集群
@@ -244,6 +257,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.Response'
+      security:
+      - ApiKeyAuth: []
       summary: Get a single user
     put:
       parameters:
@@ -265,6 +280,29 @@ paths:
           schema:
             $ref: '#/definitions/app.Response'
       summary: Update user
+  /api/v1/admin/users/query:
+    post:
+      parameters:
+      - description: user查询条件
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/v1.QueryUserForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: Get multiple users
   /api/v1/k8s/{cluster}/configmaps:
     get:
       parameters:
@@ -806,4 +844,9 @@ paths:
           schema:
             $ref: '#/definitions/app.Response'
       summary: Get Auth
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: token
+    type: apiKey
 swagger: "2.0"

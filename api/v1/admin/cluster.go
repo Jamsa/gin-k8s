@@ -51,16 +51,26 @@ func GetCluster(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, cluster)
 }
 
+
+type QueryClusterForm struct {
+	Name    string `form:"name" valid:"MaxSize(100)"`
+	Desc    string `form:"desc" valid:"MaxSize(255)"`
+	Content string `form:"content" valid:"MaxSize(65535)"`
+	State   int    `form:"state" valid:"Range(0,1)"`
+}
 // @ Param tag_id body int false "TagID"
 // @ Param created_by body int false "CreatedBy"
+// @Param state query int false "State"
 
 // @Summary Get multiple clusters
 // @Produce  json
-// @Param state query int false "State"
+// @Param user body v1.QueryClusterForm true "cluster查询条件"
+// @Security ApiKeyAuth
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/admin/clusters [get]
+// @Router /api/v1/admin/clusters/query [post]
 func GetClusters(c *gin.Context) {
+	/*
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}
 
@@ -82,9 +92,22 @@ func GetClusters(c *gin.Context) {
 		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
 		return
 	}
+	*/
+	var (
+		appG = app.Gin{C: c}
+		form QueryClusterForm
+	)
+
+	httpCode, errCode := app.BindAndValid(c, &form)
+	if errCode != e.SUCCESS {
+		appG.Response(httpCode, errCode, nil)
+		return
+	}
 
 	clusterService := cluster_service.Cluster{
-		State:    state,
+		State:    form.State,//state,
+		Name: 	  form.Name,
+		Desc: 	  form.Desc,
 		PageNum:  util.GetPage(c),
 		PageSize: setting.AppSetting.PageSize,
 	}

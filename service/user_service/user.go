@@ -116,6 +116,12 @@ func (a *User) getMaps() map[string]interface{} {
 	if a.State != -1 {
 		maps["state"] = a.State
 	}
+	if len(a.Fullname)>0 {
+		maps["fullname"] = a.Fullname
+	}
+	if len(a.Username)>0 {
+		maps["Username"] = a.Username
+	}
 	/*if a.TagID != -1 {
 		maps["tag_id"] = a.TagID
 	}*/

@@ -16,6 +16,7 @@ import (
 // @Summary Get a single user
 // @Produce  json
 // @Param id path int true "ID"
+// @Security ApiKeyAuth
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Router /api/v1/admin/users/{id} [get]
@@ -51,16 +52,26 @@ func GetUser(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, user)
 }
 
+type QueryUserForm struct {
+	Username    string `form:"username" valid:"MaxSize(100)"`
+	Fullname    string `form:"fullname" valid:"MaxSize(100)"`
+	Desc    string `form:"desc" valid:"MaxSize(255)"`
+	State   int    `form:"state" valid:"Range(0,1)"`
+}
+
 // @ Param tag_id body int false "TagID"
 // @ Param created_by body int false "CreatedBy"
+// @Param state query int false "State"
 
 // @Summary Get multiple users
 // @Produce  json
-// @Param state query int false "State"
+// @Param user body v1.QueryUserForm true "user查询条件"
+// @Security ApiKeyAuth
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
-// @Router /api/v1/admin/users [get]
+// @Router /api/v1/admin/users/query [post]
 func GetUsers(c *gin.Context) {
+	/*
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}
 
@@ -76,15 +87,25 @@ func GetUsers(c *gin.Context) {
 	// 	tagId = com.StrTo(arg).MustInt()
 	// 	valid.Min(tagId, 1, "tag_id")
 	// }
-
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
 		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
 		return
 	}
+	*/
+	var (
+		appG = app.Gin{C: c}
+		form QueryUserForm
+	)
+
+	httpCode, errCode := app.BindAndValid(c, &form)
+	if errCode != e.SUCCESS {
+		appG.Response(httpCode, errCode, nil)
+		return
+	}
 
 	userService := user_service.User{
-		State:    state,
+		State:    form.State, //state
 		PageNum:  util.GetPage(c),
 		PageSize: setting.AppSetting.PageSize,
 	}

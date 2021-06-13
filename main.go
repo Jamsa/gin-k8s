@@ -23,6 +23,13 @@ func init() {
 	util.Setup()
 }
 
+// @title gin-k8s API
+// @version 0.0.1
+// @description This is a gin k8s
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name token
+// @BasePath /
 func main() {
 	gin.SetMode(setting.ServerSetting.RunMode)
 

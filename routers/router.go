@@ -67,14 +67,14 @@ func InitRouter() *gin.Engine {
 
 
 		//集群
-		apiv1.GET("/admin/clusters", admv1.GetClusters)
+		apiv1.POST("/admin/clusters/query", admv1.GetClusters)
 		apiv1.GET("/admin/clusters/:id", admv1.GetCluster)
 		apiv1.POST("/admin/clusters", admv1.AddCluster)
 		apiv1.PUT("/admin/clusters/:id", admv1.EditCluster)
 		apiv1.DELETE("/admin/clusters/:id", admv1.DeleteCluster)
 
 		//用户
-		apiv1.GET("/admin/users", admv1.GetUsers)
+		apiv1.POST("/admin/users/query", admv1.GetUsers)
 		apiv1.GET("/admin/users/:id", admv1.GetUser)
 		apiv1.POST("/admin/users", admv1.AddUser)
 		apiv1.PUT("/admin/users/:id", admv1.EditUser)

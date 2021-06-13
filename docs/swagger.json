@@ -1,22 +1,29 @@
 {
     "swagger": "2.0",
     "info": {
+        "description": "This is a gin k8s",
+        "title": "gin-k8s API",
         "contact": {},
-        "license": {}
+        "license": {},
+        "version": "0.0.1"
     },
+    "basePath": "/",
     "paths": {
         "/api/v1/admin/clusters": {
-            "get": {
+            "post": {
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Get multiple clusters",
+                "summary": "Add cluster",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "State",
-                        "name": "state",
-                        "in": "query"
+                        "description": "cluster集群",
+                        "name": "cluster",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.AddClusterForm"
+                        }
                     }
                 ],
                 "responses": {
@@ -33,20 +40,27 @@
                         }
                     }
                 }
-            },
+            }
+        },
+        "/api/v1/admin/clusters/query": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Add cluster",
+                "summary": "Get multiple clusters",
                 "parameters": [
                     {
-                        "description": "cluster集群",
-                        "name": "cluster",
+                        "description": "cluster查询条件",
+                        "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/v1.AddClusterForm"
+                            "$ref": "#/definitions/v1.QueryClusterForm"
                         }
                     }
                 ],
@@ -158,34 +172,6 @@
             }
         },
         "/api/v1/admin/users": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Get multiple users",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "State",
-                        "name": "state",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/app.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/app.Response"
-                        }
-                    }
-                }
-            },
             "post": {
                 "produces": [
                     "application/json"
@@ -218,8 +204,51 @@
                 }
             }
         },
+        "/api/v1/admin/users/query": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get multiple users",
+                "parameters": [
+                    {
+                        "description": "user查询条件",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.QueryUserForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/admin/users/{id}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -1232,6 +1261,47 @@
                     "type": "string"
                 }
             }
+        },
+        "v1.QueryClusterForm": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "desc": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "integer"
+                }
+            }
+        },
+        "v1.QueryUserForm": {
+            "type": "object",
+            "properties": {
+                "desc": {
+                    "type": "string"
+                },
+                "fullname": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "token",
+            "in": "header"
         }
     }
 }
