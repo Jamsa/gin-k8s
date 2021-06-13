@@ -14,3 +14,10 @@ func MarkErrors(errors []*validation.Error) {
 
 	return
 }
+
+
+// 分页查询参数
+type Page struct{
+	PageNum int
+	PageSize int
+}

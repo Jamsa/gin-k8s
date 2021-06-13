@@ -22,9 +22,14 @@ type App struct {
 	QrCodeSavePath string
 	FontSavePath   string
 
+	LogGin bool
 	LogSavePath string
 	LogSaveName string
 	LogFileExt  string
+
+	LogMaxAge int64
+	LogRotationTime int64
+
 	TimeFormat  string
 }
 

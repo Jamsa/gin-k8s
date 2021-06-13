@@ -7,8 +7,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	//"github.com/jamsa/gin-k8s/pkg/gredis"
-
 	"github.com/jamsa/gin-k8s/models"
 	"github.com/jamsa/gin-k8s/pkg/gredis"
 	"github.com/jamsa/gin-k8s/pkg/logging"
@@ -43,6 +41,7 @@ func main() {
 	}
 
 	log.Printf("[info] start http server listening %s", endPoint)
+	// 热更新
 	// server.ListenAndServe()
 
 	// If you want Graceful Restart, you need a Unix system and download github.com/fvbock/endless
@@ -58,53 +57,4 @@ func main() {
 	if err != nil {
 		log.Printf("Server err: %v", err)
 	}
-
-	/*
-		var kubeconfig *string
-		if home := homedir.HomeDir(); home != "" {
-			kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
-		} else {
-			kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
-		}
-		flag.Parse()
-
-		// use the current context in kubeconfig
-		config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		// create the clientset
-		clientset, err := kubernetes.NewForConfig(config)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		r := gin.Default()
-		r.GET("/ping", func(c *gin.Context) {
-			pods, err := clientset.CoreV1().Pods("mis-dy").List(context.TODO(), metav1.ListOptions{})
-			if err == nil {
-				c.JSON(200, gin.H{
-					"allpods": pods.Items[0],
-				})
-				return
-			}
-
-			c.JSON(200, gin.H{
-				"message": "pong",
-			})
-		})
-		r.GET("/pong", func(c *gin.Context) {
-			svces, err := clientset.CoreV1().Services("mis-dy").List(context.TODO(), metav1.ListOptions{})
-			if err == nil {
-				c.JSON(200, gin.H{
-					"allservices": svces.Items[0],
-				})
-				return
-			}
-			c.JSON(200, gin.H{
-				"message": "ping",
-			})
-		})
-		r.Run(":9000")*/
 }

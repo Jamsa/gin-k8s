@@ -6,6 +6,8 @@ import (
 	admv1 "github.com/jamsa/gin-k8s/api/v1/admin"
 	k8sv1 "github.com/jamsa/gin-k8s/api/v1/k8s"
 	_ "github.com/jamsa/gin-k8s/docs"
+	"github.com/jamsa/gin-k8s/pkg/logging"
+	"github.com/jamsa/gin-k8s/pkg/setting"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
@@ -13,7 +15,11 @@ import (
 // InitRouter initialize routing information
 func InitRouter() *gin.Engine {
 	r := gin.New()
-	r.Use(gin.Logger())
+	//r.Use(gin.Logger())
+	if setting.AppSetting.LogGin {
+		r.Use(logging.LogToLogrus())
+	}
+
 	r.Use(gin.Recovery())
 
 	/*
